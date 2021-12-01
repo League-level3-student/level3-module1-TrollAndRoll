@@ -16,13 +16,13 @@ color[] sunColors = {
 
 void setup() {
   // 1. Set the size of your sketch
-  
+  size(500, 500);
 }
 
 
 void draw() {
   // 2. Draw the bgColor background color
-
+  background(bgColor);
   /*
    * PART 1: Drawing the sun
    */
@@ -30,7 +30,9 @@ void draw() {
   // Draw an ellipse for the sun in the center of the window
   // Use fill(sunColors[0]) to make it yellow
   // Use noStroke() to remove the black outline
-
+  ellipse(250, 250, 300, 300);
+  fill(sunColors[0]);
+  noStroke();
   // Do you see a yellow sun like in the 1st image?
   // If not, fix your code before proceeding.
 
@@ -44,14 +46,18 @@ void draw() {
   // Call the loadPixels() method to put all the pixel colors into
   // the pixels[] array
   // https://processing.org/reference/loadPixels_.html
-
+  loadPixels();
   // Loop through all the pixels in your window.
   // By default, a pixel is a 1x1 colored square, so if the window width is 600 
   // and the height is 400 (600x400), then there are 600 * 400 = 240,000 pixels 
 
     // We want to change the color of our sun so use an if statement
     // to check if the pixel is the color of the yellow circle. 
-
+  for (int i = 0; i < pixels.length; i++) {
+    if(pixels[i] == sunColors[0]){
+        
+    }
+  }
       // If it's the same color we need to map the pixel to a
       // color in our sunColors[] array (see 2nd gradient image)
 
