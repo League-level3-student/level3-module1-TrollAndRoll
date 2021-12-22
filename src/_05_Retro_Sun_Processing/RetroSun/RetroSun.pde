@@ -1,5 +1,24 @@
 color bgColor = color(31, 0, 48);
 
+int windowX = 500;
+int windowY = 500;
+int pixelCount = windowX * windowY;
+
+int sunCenterX = 250;
+int sunCenterY = 250;
+
+int sunDiameter = 300;
+int sunRadius = sunDiameter/2;
+
+int sunTopY = sunCenterY - sunDiameter/2;
+int sunBottomY = sunCenterY + sunDiameter/2;
+
+float x, y, w, h;
+
+ArrayList<Rectangle> sections = new ArrayList<Rectangle>();
+
+Rectangle one, two, three, four, five;
+
 // RGB colors
 color[] sunColors = {
   color(212, 202, 11), 
@@ -17,6 +36,23 @@ color[] sunColors = {
 void setup() {
   // 1. Set the size of your sketch
   size(500, 500);
+
+  x = sunCenterX - sunRadius;
+  y = sunBottomY;
+  w = 2 * sunDiameter;
+  h = 40;
+
+  one = new Rectangle(x, y, w, h);
+  two = new Rectangle(x, y-45, w, h);
+  three = new Rectangle(x, y-90, w, h);
+  four = new Rectangle(x, y-135, w, h);
+  five = new Rectangle(x, y-180, w, h);
+  
+  sections.add(one);
+  sections.add(two);
+  sections.add(three);
+  sections.add(four);
+  sections.add(five);
 }
 
 
@@ -30,8 +66,8 @@ void draw() {
   // Draw an ellipse for the sun in the center of the window
   // Use fill(sunColors[0]) to make it yellow
   // Use noStroke() to remove the black outline
-  ellipse(250, 250, 300, 300);
   fill(sunColors[0]);
+  ellipse(sunCenterX, sunCenterY, sunDiameter, sunDiameter);
   noStroke();
   // Do you see a yellow sun like in the 1st image?
   // If not, fix your code before proceeding.
@@ -51,34 +87,38 @@ void draw() {
   // By default, a pixel is a 1x1 colored square, so if the window width is 600 
   // and the height is 400 (600x400), then there are 600 * 400 = 240,000 pixels 
 
-    // We want to change the color of our sun so use an if statement
-    // to check if the pixel is the color of the yellow circle. 
-  for (int i = 0; i < pixels.length; i++) {
-    if(pixels[i] == sunColors[0]){
-        
+  // We want to change the color of our sun so use an if statement
+  // to check if the pixel is the color of the yellow circle. 
+
+  for (int i = 0; i < pixelCount; i++) {
+    if (pixels[i] == sunColors[0]) {
+      int y = i / width;
+      float step = map(y, sunTopY, sunBottomY, 0, 1);
+      pixels[i] = interpolateColor(sunColors, step);
     }
   }
-      // If it's the same color we need to map the pixel to a
-      // color in our sunColors[] array (see 2nd gradient image)
+  // If it's the same color we need to map the pixel to a
+  // color in our sunColors[] array (see 2nd gradient image)
 
-      // The top of the sun is yellow (sunColors[0]) and the bottom
-      // of the sun is red (sunColors[sunColors.length - 1]
+  // The top of the sun is yellow (sunColors[0]) and the bottom
+  // of the sun is red (sunColors[sunColors.length - 1]
 
-      // In order to get the right color, the y value from the top of
-      // the sun to the bottom has to be mapped to a range from 0 to 1.
-      // Use the map() function to do that:
-      // int y = i / width;
-      // float step = map(y, sunTopY, sunBottomY, 0, 1);
+  // In order to get the right color, the y value from the top of
+  // the sun to the bottom has to be mapped to a range from 0 to 1.
+  // Use the map() function to do that:
+  // int y = i / width;
+  // float step = map(y, sunTopY, sunBottomY, 0, 1);
 
-      // Call interpolateColor(sunColors, step) and save the color
-      // variable that's returned
+  // Call interpolateColor(sunColors, step) and save the color
+  // variable that's returned
 
-      // Set pixels[i] to the returned color 
+  // Set pixels[i] to the returned color 
 
 
   // Call updatePixels() after your loop through all the pixels to
   // update the pixel colors
   // https://processing.org/reference/updatePixels_.html
+  updatePixels();
 
   /*
    * PART 3: Drawing the missing sections at the bottom of the sun
@@ -88,20 +128,26 @@ void draw() {
    */
 
   // Set the fill color to the background color
-
-  // To draw each rectangle we need to find its x, y, width, height
+  fill(bgColor);
+  // To draw each rectangle we need to. Find its x, y, width, height
   // *The y position can be any value within the sun:
-  //   float y = width / 2;
+
   // *The height can be any value you choose:
-  //   float h = 40;
+
   // *The x position can be the center of the sun's x position minus the radius:
-  //   float x = sunCenterX - sunRadius
+
   // * The width can be 2 times the radius
-  //   float w = 2 * sunRadius
 
   // Do you see a section missing from the sun like in the 3rd image?
-
-
+  for (int i = 0; i < sections.size(); i++) {
+    rect(sections.get(i).x, sections.get(i).y, sections.get(i).w, sections.get(i).h);
+    sections.get(i).y-=0.5;
+    sections.get(i).h-=0.085;
+    if (sections.get(i).y < width/3) {
+      sections.get(i).y = sunBottomY;
+      sections.get(i).h = 40;
+    }
+  }
   /*
    * PART 4: Moving the missing sun sections
    *
@@ -182,3 +228,138 @@ class Rectangle {
     this.h = h;
   }
 }
+
+class Star {
+  int x;
+  int y;
+  color starColor;
+  float startAlpha;
+  float alpha;
+  float diameter;
+
+  Star(int x, int y, color col) {
+    this.x = x;
+    this.y = y;
+    starColor = col;
+    this.diameter = random(0.1, 3);
+    this.startAlpha = random(1, 200);
+    this.alpha = startAlpha;
+  }
+  
+  void setAlpha(int alpha){
+    this.alpha = constrain(alpha, startAlpha, 255);
+  }
+
+  void draw() {
+    noStroke();
+    fill(starColor, alpha);
+    float blink = random(0, 0.8);
+    ellipse(x, y, diameter + blink, diameter + blink);
+  }
+}
+
+//class Reflection {
+///*
+//  // HSB colors
+//  color[] barColors = {
+//    color(285, 96.6, 23.1), 
+//    color(312, 100, 42.7), 
+//    color(340, 66.9, 60.4), 
+//    color(11, 60.8, 62), 
+//    color(340, 66.9, 60.4), 
+//    color(312, 100, 42.7), 
+//    color(285, 96.6, 23.1)
+//  };
+//*/
+//  // RGB colors
+//  color[] barColors = {
+//    color(45, 2, 59), 
+//    color(109, 0, 88), 
+//    color(154, 51, 86), 
+//    color(158, 79, 62), 
+//    color(154, 51, 86), 
+//    color(109, 0, 88), 
+//    color(45, 2, 59)
+//  };
+
+//  int sunRadius;
+//  int numReflectionBars;
+//  int topX;
+//  int topY;
+//  int topWidth;
+//  int bottomY;
+//  int maxHeight;
+//  float speed;
+//  ArrayList lowerBars;
+  
+//  Reflection(int sunRadius, int numBars, int topX, int topY, float speed){
+//    this.sunRadius = sunRadius;
+//    this.topX = topX;
+//    this.topY = topY;
+//    this.speed = speed;
+
+//    initialize(numBars);
+//  }
+  
+//  void initialize(int numBars){
+//    this.numReflectionBars = numBars;
+    
+//    topWidth = 2 * (sunRadius + sunRadius/3);
+//    maxHeight = 10;
+//    bottomY = topY + (numBars * 2 * maxHeight);
+//    lowerBars = new ArrayList();
+    
+//    // Setup bottom relection bars
+//    int x = topX;
+//    int y = topY;
+//    int w = topWidth;
+//    int h = maxHeight;
+//    for ( int i = 0; i < numReflectionBars; i++ ) {   
+//      y += (bottomY - topY) / numBars;
+//      x += sunRadius / 16;
+//      w -= 2 * (sunRadius / 16);
+
+//      Rectangle r = new Rectangle(x, y, w, h);
+//      lowerBars.add(r);
+//    }
+//  }
+  
+//  void draw(){
+//    strokeWeight(1);
+    
+//    for ( Rectangle bar : lowerBars ) {
+//      for ( int i = (int)bar.x; i < bar.x + bar.w; i++ ) {
+//        float alphaMax = -255 - (bar.y - topY);
+//        float alphaMin =  255 + (bar.y - topY);
+//        float alpha = map(i, bar.x, bar.x + bar.w, alphaMin, alphaMax);
+//        float step = map(i, bar.x, bar.x + bar.w, 0, 1);
+//        color lc = interpolateColor(barColors, step);
+    
+//        stroke(lc, 255 - abs(alpha));
+//        line(i, bar.y, i, bar.y + bar.h);
+//      }
+      
+//      bar.y += speed;
+//      bar.x += speed;
+//      bar.w -= 2 * speed;
+
+//      if( bar.y > bottomY ) {
+//        // Bar at bottom, reset to top
+        
+//        bar.x = topX;
+//        bar.y = topY + maxHeight;
+//        bar.w = topWidth;
+//        bar.h = 1;
+//      } else if( bar.y > bottomY - maxHeight ) {
+//        // Bar near bottom
+        
+//        bar.h -= speed;
+//      } else if( bar.h < maxHeight ) {
+//        // Bar height just reset and at top
+        
+//        bar.y -= speed;
+//        bar.h += speed;
+//      }
+//    }
+//  }
+//}
