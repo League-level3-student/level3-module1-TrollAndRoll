@@ -44,7 +44,7 @@ public class Schedule {
                 // Start time is between 0 and 23
                 
                 ArrayList<Integer> startTimes = weeklyAvailability.get(dayOfTheWeek);
-                startTimes.add(startTime);
+                startTimes.add(startTime);//updates that day of the week's startTime ArrayList
             } else {
                 JOptionPane.showMessageDialog(null, "Start time should be an integer >= 0 and <= 23");
             }
