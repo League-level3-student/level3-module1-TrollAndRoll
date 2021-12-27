@@ -28,7 +28,7 @@ public class Utilities {
      * Use this method to get a HashMap of a California city and the
      * weather data
      */
-    public static HashMap<String, WeatherData> getWeatherData() {
+    public static HashMap<String, WeatherData> getWeatherData() {// utilitiesObject.getWeatherData().get([nameOfCity]);
         HashMap<String, WeatherData> weatherData = new HashMap<>();
         HashMap<String, Integer> duplicateLocations = new HashMap<>();
         
@@ -49,8 +49,8 @@ public class Utilities {
                 
                     // Add a separate entry for duplicate city names because
                     // large cities have multiple recordings
-                    if( weatherData.containsKey(cityName.toString()) ) {
-                        if( duplicateLocations.containsKey(cityName.toString()) ){
+                    if( weatherData.containsKey(cityName.toString()) ) {//if we have the city in our hashmap...
+                        if( duplicateLocations.containsKey(cityName.toString()) ){//and also the city name has been seen before...
                             Integer duplicateNum = duplicateLocations.get(cityName.toString());
                         
                             // Update number at the end, e.g. Orange1, Orange2, ...
