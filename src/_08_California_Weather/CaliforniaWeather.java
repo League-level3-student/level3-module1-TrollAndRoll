@@ -29,7 +29,7 @@ import javax.swing.JPanel;
  * Example: User: minimum temperature �F = 65.0, max temperature �F = 70.0
  *          Program: Fortana, Glendale, Escondido, Del Mar, ...
  * 
- * EXTRA:
+ * EXTRA:***************************************************************************************************************************
  * Feel free to add pictures for specific weather conditions or a thermometer
  * for the temperature. Also If you want your program to get the current day's
  * temperature, you can get a free API key at: https://openweathermap.org/api
